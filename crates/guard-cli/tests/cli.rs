@@ -273,8 +273,7 @@ pub fn update(e: Env) { write_admin!(e); }\n",
     )
     .unwrap();
 
-    let output =
-        scan(&[dir.path().to_str().unwrap(), "--expand-macros", "--rule", "SG-002"]).get_output().clone();
+    let output = scan(&[dir.path().to_str().unwrap(), "--expand-macros", "--rule", "SG-002"]).get_output().clone();
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
     if stderr.contains("cargo-expand is not installed") || stderr.contains("cargo is not available") {

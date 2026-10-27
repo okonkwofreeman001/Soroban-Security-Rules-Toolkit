@@ -266,13 +266,12 @@ fn expand_macros(project: &mut Project, include_tests: bool) {
             }
         };
         if !output.status.success() {
-            let message = format!(
-                "{}{}",
-                String::from_utf8_lossy(&output.stderr),
-                String::from_utf8_lossy(&output.stdout)
-            );
+            let message =
+                format!("{}{}", String::from_utf8_lossy(&output.stderr), String::from_utf8_lossy(&output.stdout));
             let lower = message.to_ascii_lowercase();
-            if (lower.contains("no such command") && lower.contains("expand")) || lower.contains("could not find `expand`") {
+            if (lower.contains("no such command") && lower.contains("expand"))
+                || lower.contains("could not find `expand`")
+            {
                 eprintln!("stellar-guard: cargo-expand is not installed; scanning unexpanded source");
                 return;
             }
@@ -285,7 +284,10 @@ fn expand_macros(project: &mut Project, include_tests: bool) {
         }
         let expanded = String::from_utf8_lossy(&output.stdout);
         if expanded.trim().is_empty() {
-            eprintln!("stellar-guard: cargo expand produced no source in {}; scanning unexpanded source", root.display());
+            eprintln!(
+                "stellar-guard: cargo expand produced no source in {}; scanning unexpanded source",
+                root.display()
+            );
             continue;
         }
         if let Err(error) = project.replace_crate_with_expanded_source(crate_id, &expanded, include_tests) {
@@ -319,7 +321,10 @@ fn scan(args: ScanArgs, color: bool) -> Result<ExitCode> {
         let mut project = Project::load(&args.paths, &discover)?;
         if project.files.is_empty() && project.failures.is_empty() {
             let shown: Vec<_> = args.paths.iter().map(|p| p.display().to_string()).collect();
-            bail!("no Rust source files found in {} (test code is skipped unless --include-tests is given)", shown.join(", "));
+            bail!(
+                "no Rust source files found in {} (test code is skipped unless --include-tests is given)",
+                shown.join(", ")
+            );
         }
         expand_macros(&mut project, settings.include_tests);
         analyzer.scan_project(&project, &settings)

@@ -168,7 +168,8 @@ impl Project {
             .unwrap_or(first);
         let path = original.path.clone();
         let display_path = format!("{} (cargo expand)", original.display_path);
-        let (ast, _) = parse_source(text, include_tests).map_err(|error| parse_failure(display_path.clone(), &error))?;
+        let (ast, _) =
+            parse_source(text, include_tests).map_err(|error| parse_failure(display_path.clone(), &error))?;
         self.files.retain(|f| f.crate_id != crate_id);
         self.files.push(SourceFile { path, display_path, text: text.to_string(), ast, crate_id });
         self.files.sort_by(|a, b| (&a.crate_id, &a.display_path).cmp(&(&b.crate_id, &b.display_path)));
